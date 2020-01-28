@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/Neostore/dbconnection"
+	dbconnection"github.com/Neostore/dbconnection"
 	"github.com/Neostore/models"
 	"net/http"
 	"os"

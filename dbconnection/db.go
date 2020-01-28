@@ -1,4 +1,4 @@
-package dbonnection
+package dbconnection
 
 import (
 	"fmt"
@@ -31,8 +31,9 @@ func OpenDbConnection() *gorm.DB {
 		db, err = gorm.Open("sqlite3", path.Join(".", "app.db"))
 	} else {
 		// db, err := gorm.Open("mysql", "root:root@localhost/go_api_shop_gonc?charset=utf8")
-		databaseUrl := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable ", host, username, password, dbName)
-		db, err = gorm.Open(dialect, databaseUrl)
+		databaseURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable ", host, username, password, dbName)
+		//databaseURL := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable ", host, username, password, dbName)
+		db, err = gorm.Open(dialect, databaseURL)
 	}
 
 	if err != nil {

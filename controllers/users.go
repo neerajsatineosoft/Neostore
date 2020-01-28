@@ -15,7 +15,7 @@ import (
 )
 
 func RegisterUserRoutes(router *gin.RouterGroup) {
-	router.POST("/", UsersRegistration)
+	router.POST("/registeration", Usersegistration)
 	router.POST("/login", UsersLogin)
 }
 
@@ -35,7 +35,7 @@ func UsersRegistration(c *gin.Context) {
 		Password:  string(password),
 		Email:     json.Email,
 		Phoneno:   json.Phoneno,
-		Gender:	   json.Gender
+		Gender:    json.Gender,
 	}); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, form.CreateDetailedErrorDto("database", err))
 		return

@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	//"github.com/gin-contrib/cors"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"github.com/joho/godotenv"
@@ -10,7 +10,7 @@ import (
 	"github.com/Neostore/dbconnection"
 	"github.com/Neostore/middlewares"
 	"github.com/Neostore/models"
-	//"github.com/Neostore/seeds"
+	"github.com/Neostore/seeds"
 	"os"
 )
 
@@ -62,7 +62,7 @@ func addDbConstraints(database *gorm.DB) {
 		// database.Model(&models.OrderItem{}).AddForeignKey("order_id", "orders(id)", "CASCADE", "CASCADE")
 		// database.Model(&models.OrderItem{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
-		// database.Model(&models.Address{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
+		 database.Model(&models.Address{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 
 		database.Model(&models.UserRole{}).AddForeignKey("user_id", "users(id)", "CASCADE", "CASCADE")
 		database.Model(&models.UserRole{}).AddForeignKey("role_id", "roles(id)", "CASCADE", "CASCADE")
@@ -143,7 +143,7 @@ func main() {
 
 	goGonicEngine.Use(middlewares.Benchmark())
 
-	// goGonicEngine.Use(middlewares.Cors())
+	goGonicEngine.Use(middlewares.Cors())
 
 	goGonicEngine.Use(middlewares.UserLoaderMiddleware())
 	goGonicEngine.Static("/static", "./static")
@@ -152,11 +152,13 @@ func main() {
 	controllers.RegisterUserRoutes(apiRouteGroup.Group("/users"))
 	// controllers.RegisterProductRoutes(apiRouteGroup.Group("/products"))
 	// controllers.RegisterCommentRoutes(apiRouteGroup.Group("/"))
-	// controllers.RegisterPageRoutes(apiRouteGroup.Group("/"))
-	// controllers.RegisterAddressesRoutes(apiRouteGroup.Group("/users"))
+	 //controllers.RegisterPageRoutes(apiRouteGroup.Group("/"))
+	 controllers.RegisterAddressesRoutes(apiRouteGroup.Group("/users"))
 	// controllers.RegisterTagRoutes(apiRouteGroup.Group("/tags"))
 	// controllers.RegisterCategoryRoutes(apiRouteGroup.Group("/categories"))
 	// controllers.RegisterOrderRoutes(apiRouteGroup.Group("/orders"))
+
+	//controllers.CreateUser(apiRouteGroup.Group("/createuser"))
 
 	goGonicEngine.Run(":8080") // listen and serve on 0.0.0.0:8080
 }

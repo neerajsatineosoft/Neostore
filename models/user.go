@@ -17,6 +17,8 @@ type User struct {
 	Username  string `gorm:"column:username"`
 	Email     string `gorm:"column:email;unique_index"`
 	Password  string `gorm:"column:password;not null"`
+	Phoneno string 	 `gorm:"column:phone_no;not null"`
+	Gender string     `gorm:"column:gender;not null"`
 
 	//Comments []Comment `gorm:"foreignkey:UserId"`
 

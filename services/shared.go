@@ -1,7 +1,7 @@
 package services
 
 import (
-	dbconnection "github.com\Neostore\dbconnection"
+	dbconnection "github.com/Neostore/dbconnection"
 )
 
 func CreateOne(data interface{}) error {
