@@ -1,8 +1,9 @@
 package form
 
 import (
-	"github.com/Neostore/models"
 	"net/http"
+
+	"github.com/Neostore/models"
 )
 
 type CreateAddress struct {
@@ -19,7 +20,7 @@ func CreateAddressPagedResponse(request *http.Request, addresses []models.Addres
 	for index, address := range addresses {
 		resources[index] = GetAddressDto(&address, includeUser)
 	}
-	return CreatePagedResponse(request, resources, "addresses", page, page_size, count)
+	return CreatePagedResponseDto(request, resources, "addresses", page, page_size, count)
 }
 
 func GetAddressDto(address *models.Address, includeUser bool) map[string]interface{} {

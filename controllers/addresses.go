@@ -1,11 +1,11 @@
 package controllers
 
 import (
-	"github.com/gin-gonic/gin"
 	"github.com/Neostore/form"
 	"github.com/Neostore/middlewares"
 	"github.com/Neostore/models"
 	"github.com/Neostore/services"
+	"github.com/gin-gonic/gin"
 
 	"net/http"
 	"strconv"
@@ -16,7 +16,7 @@ func RegisterAddressesRoutes(router *gin.RouterGroup) {
 	router.Use(middlewares.EnforceAuthenticatedMiddleware())
 	{
 		router.GET("/addresses", ListAddresses)
-		router.POST("/addresses", CreateAddress)
+		router.POST("/address", CreateAddress)
 	}
 
 }

@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"errors"
+	"fmt"
 
 	form "github.com/Neostore/form"
 	"github.com/Neostore/services"
@@ -15,8 +16,13 @@ import (
 )
 
 func RegisterUserRoutes(router *gin.RouterGroup) {
-	router.POST("/registeration", Usersegistration)
+	router.POST("/home", Homepage)
+	router.POST("/registeration", UsersRegistration)
 	router.POST("/login", UsersLogin)
+}
+
+func Homepage(c *gin.Context) {
+	fmt.Fprintf("Welcome to NeoStore")
 }
 
 func UsersRegistration(c *gin.Context) {

@@ -2,10 +2,11 @@ package form
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gopkg.in/go-playground/validator.v8"
 	"math"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"gopkg.in/go-playground/validator.v8"
 )
 
 type BaseDto struct {
@@ -54,7 +55,7 @@ func CreatePageMeta(request *http.Request, loadedItemsCount, page, page_size, to
 	return response
 }
 
-func CreatePagedResponse(request *http.Request, resources []interface{}, resource_name string, page, page_size, totalItemsCount int) map[string]interface{} {
+func CreatePagedResponseDto(request *http.Request, resources []interface{}, resource_name string, page, page_size, totalItemsCount int) map[string]interface{} {
 
 	response := CreatePageMeta(request, len(resources), page, page_size, totalItemsCount)
 	response[resource_name] = resources
@@ -77,7 +78,7 @@ func CreateErrorDtoWithMessage(message string) map[string]interface{} {
 }
 
 // This should only be called when we have an Error that is returned from a ShouldBind which contains a lot of information
-// other kind of errors should use other functions such as CreateDetailedErrorDto
+// other kind of errors should use other functions such as CreateDetailedError
 func CreateBadRequestErrorDto(err error) ErrorDto {
 	res := ErrorDto{}
 	res.Errors = make(map[string]interface{})

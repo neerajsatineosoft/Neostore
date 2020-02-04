@@ -1,7 +1,7 @@
 package services
 
 import (
-	dbconnection"github.com/Neostore/dbconnection"
+	dbconnection "github.com/Neostore/dbconnection"
 	"github.com/Neostore/models"
 )
 
@@ -20,5 +20,11 @@ func FindOneUser(condition interface{}) (models.User, error) {
 func UpdateUser(user models.User, data interface{}) error {
 	database := dbconnection.GetDb()
 	err := database.Model(user).Update(data).Error
+	return err
+}
+
+func DeleteUser(user models.User, data interface{}) error {
+	database := dbconnection.GetDb()
+	err := database.Model(user).Delete(data).Error
 	return err
 }
