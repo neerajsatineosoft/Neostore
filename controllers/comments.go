@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/Neostore/dbconnection"
-	"github.com/Neostore/form"
+	dtos "github.com/Neostore/form"
 	"github.com/Neostore/middlewares"
 	"github.com/Neostore/models"
 	"github.com/Neostore/services"
@@ -35,7 +35,7 @@ func ListComments(c *gin.Context) {
 
 	err := database.Model(&models.Product{}).Where(&models.Product{Slug: slug}).Select("id").Row().Scan(&productId)
 	if err != nil {
-		c.JSON(http.StatusNotFound, form.CreateDetailedErrorDto("comments", errors.New("invalid slug")))
+		c.JSON(http.StatusNotFound, dtos.CreateDetailedErrorDto("comments", errors.New("invalid slug")))
 		return
 	}
 	pageSizeStr := c.Query("page_size")
@@ -52,25 +52,25 @@ func ListComments(c *gin.Context) {
 	}
 	comments, totalCommentCount := services.FetchCommentsPage(productId, page, pageSize)
 
-	c.JSON(http.StatusOK, form.CreateCommentPagedResponse(c.Request, comments, page, pageSize, totalCommentCount, true, false))
+	c.JSON(http.StatusOK, dtos.CreateCommentPagedResponse(c.Request, comments, page, pageSize, totalCommentCount, true, false))
 }
 
 func CreateComment(c *gin.Context) {
 	slug := c.Param("slug")
 	if slug == "" {
-		c.JSON(http.StatusBadRequest, form.CreateErrorDtoWithMessage("You must provide a product slug you want to comment"))
+		c.JSON(http.StatusBadRequest, dtos.CreateErrorDtoWithMessage("You must provide a product slug you want to comment"))
 		return
 	}
 
-	var json form.CreateComment
+	var json dtos.CreateComment
 	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, form.CreateBadRequestErrorDto(err))
+		c.JSON(http.StatusBadRequest, dtos.CreateBadRequestErrorDto(err))
 		return
 	}
 
 	productId, err := services.FetchProductId(slug)
 	if err != nil {
-		c.JSON(http.StatusNotFound, form.CreateDetailedErrorDto("database_error", err))
+		c.JSON(http.StatusNotFound, dtos.CreateDetailedErrorDto("database_error", err))
 		return
 	}
 
@@ -82,21 +82,21 @@ func CreateComment(c *gin.Context) {
 	}
 
 	if err := services.SaveOne(&comment); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, form.CreateDetailedErrorDto("database_error", err))
+		c.JSON(http.StatusUnprocessableEntity, dtos.CreateDetailedErrorDto("database_error", err))
 		return
 	}
 
-	c.JSON(http.StatusOK, form.CreateCommentCreatedDto(&comment))
+	c.JSON(http.StatusOK, dtos.CreateCommentCreatedDto(&comment))
 }
 
 func ShowComment(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, form.CreateErrorDtoWithMessage("You must provide a valid comment id"))
+		c.JSON(http.StatusBadRequest, dtos.CreateErrorDtoWithMessage("You must provide a valid comment id"))
 	}
 	comment := services.FetchCommentById(id, true, true)
-	c.JSON(http.StatusOK, form.GetCommentDetailsDto(&comment, true, true))
+	c.JSON(http.StatusOK, dtos.GetCommentDetailsDto(&comment, true, true))
 }
 
 func DeleteComment(c *gin.Context) {
@@ -109,15 +109,15 @@ func DeleteComment(c *gin.Context) {
 	err = database.Select([]string{"id", "user_id"}).Find(&comment, id).Error
 	if err != nil || comment.ID == 0 {
 		// the comment.ID == is redundat, but shows the other way of checking but it is less readable
-		c.JSON(http.StatusNotFound, form.CreateDetailedErrorDto("comment", err))
+		c.JSON(http.StatusNotFound, dtos.CreateDetailedErrorDto("comment", err))
 	} else if currentUser.ID == comment.UserId || currentUser.IsAdmin() {
 		err = database.Delete(&comment).Error
 		if err != nil {
-			c.JSON(http.StatusNotFound, form.CreateDetailedErrorDto("database_error", err))
+			c.JSON(http.StatusNotFound, dtos.CreateDetailedErrorDto("database_error", err))
 			return
 		}
-		c.JSON(http.StatusOK, form.CreateSuccessWithMessageDto("Comment Deleted successfully"))
+		c.JSON(http.StatusOK, dtos.CreateSuccessWithMessageDto("Comment Deleted successfully"))
 	} else {
-		c.JSON(http.StatusForbidden, form.CreateErrorDtoWithMessage("You have to be admin or the owner of this comment to delete it"))
+		c.JSON(http.StatusForbidden, dtos.CreateErrorDtoWithMessage("You have to be admin or the owner of this comment to delete it"))
 	}
 }

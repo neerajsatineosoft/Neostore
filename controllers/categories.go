@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/Neostore/dbconnection"
-	"github.com/Neostore/form"
+	dtos "github.com/Neostore/form"
 	"github.com/Neostore/middlewares"
 	"github.com/Neostore/models"
 	"github.com/Neostore/services"
@@ -27,16 +27,16 @@ func RegisterCategoryRoutes(router *gin.RouterGroup) {
 func CategoryList(c *gin.Context) {
 	tags, err := services.FetchAllCategories()
 	if err != nil {
-		c.JSON(http.StatusNotFound, form.CreateDetailedErrorDto("fetch_error", err))
+		c.JSON(http.StatusNotFound, dtos.CreateDetailedErrorDto("fetch_error", err))
 		return
 	}
-	c.JSON(http.StatusOK, form.CreateCategoryListMapDto(tags))
+	c.JSON(http.StatusOK, dtos.CreateCategoryListMapDto(tags))
 }
 
 func CreateCategory(c *gin.Context) {
 	user := c.MustGet("currentUser").(models.User)
 	if user.IsNotAdmin() {
-		c.JSON(http.StatusForbidden, form.CreateErrorDtoWithMessage("Permission denied, you must be admin"))
+		c.JSON(http.StatusForbidden, dtos.CreateErrorDtoWithMessage("Permission denied, you must be admin"))
 		return
 	}
 	name := c.PostForm("name")
@@ -58,7 +58,7 @@ func CreateCategory(c *gin.Context) {
 		if _, err = os.Stat(dirPath); os.IsNotExist(err) {
 			err = os.MkdirAll(dirPath, os.ModeDir)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, form.CreateDetailedErrorDto("io_error", err))
+				c.JSON(http.StatusInternalServerError, dtos.CreateDetailedErrorDto("io_error", err))
 				return
 			}
 		}
@@ -72,7 +72,7 @@ func CreateCategory(c *gin.Context) {
 		// Open the temporary file that contains the uploaded image
 		inputFile, err := file.Open()
 		if err != nil {
-			c.JSON(http.StatusOK, form.CreateDetailedErrorDto("io_error", err))
+			c.JSON(http.StatusOK, dtos.CreateDetailedErrorDto("io_error", err))
 		}
 		defer inputFile.Close()
 
@@ -96,7 +96,7 @@ func CreateCategory(c *gin.Context) {
 	// SELECT "tag_id", "product_id" FROM "file_uploads"  WHERE (id = insertedFileUploadId)
 	err = database.Create(&category).Error
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, form.CreateDetailedErrorDto("db_error", err))
+		c.JSON(http.StatusInternalServerError, dtos.CreateDetailedErrorDto("db_error", err))
 	}
-	c.JSON(http.StatusOK, form.CreateCategoryCreatedDto(category))
+	c.JSON(http.StatusOK, dtos.CreateCategoryCreatedDto(category))
 }

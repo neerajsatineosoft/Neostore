@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"github.com/Neostore/form"
+	dtos "github.com/Neostore/form"
 	"github.com/Neostore/middlewares"
 	"github.com/Neostore/models"
 	"github.com/Neostore/services"
@@ -16,7 +16,7 @@ func RegisterAddressesRoutes(router *gin.RouterGroup) {
 	router.Use(middlewares.EnforceAuthenticatedMiddleware())
 	{
 		router.GET("/addresses", ListAddresses)
-		router.POST("/address", CreateAddress)
+		router.POST("/addresses", CreateAddress)
 	}
 
 }
@@ -41,16 +41,16 @@ func ListAddresses(c *gin.Context) {
 	includeUser := false
 	addresses, totalCommentCount := services.FetchAddressesPage(userId, page, pageSize, includeUser)
 
-	c.JSON(http.StatusOK, form.CreateAddressPagedResponse(c.Request, addresses, page, pageSize, totalCommentCount, includeUser))
+	c.JSON(http.StatusOK, dtos.CreateAddressPagedResponse(c.Request, addresses, page, pageSize, totalCommentCount, includeUser))
 }
 
 func CreateAddress(c *gin.Context) {
 
 	user := c.MustGet("currentUser").(models.User)
 
-	var json form.CreateAddress
+	var json dtos.CreateAddress
 	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, form.CreateBadRequestErrorDto(err))
+		c.JSON(http.StatusBadRequest, dtos.CreateBadRequestErrorDto(err))
 		return
 	}
 	firstName := json.FirstName
@@ -73,9 +73,9 @@ func CreateAddress(c *gin.Context) {
 	}
 
 	if err := services.SaveOne(&address); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, form.CreateDetailedErrorDto("database_error", err))
+		c.JSON(http.StatusUnprocessableEntity, dtos.CreateDetailedErrorDto("database_error", err))
 		return
 	}
 
-	c.JSON(http.StatusOK, form.GetAddressCreatedDto(&address, false))
+	c.JSON(http.StatusOK, dtos.GetAddressCreatedDto(&address, false))
 }

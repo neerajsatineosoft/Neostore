@@ -2,9 +2,8 @@ package controllers
 
 import (
 	"errors"
-	"fmt"
 
-	form "github.com/Neostore/form"
+	dtos "github.com/Neostore/form"
 	"github.com/Neostore/services"
 	"github.com/gin-gonic/gin"
 
@@ -16,34 +15,28 @@ import (
 )
 
 func RegisterUserRoutes(router *gin.RouterGroup) {
-	router.POST("/home", Homepage)
-	router.POST("/registeration", UsersRegistration)
+	router.POST("/register", UsersRegistration)
 	router.POST("/login", UsersLogin)
-}
-
-func Homepage(c *gin.Context) {
-	fmt.Fprintf("Welcome to NeoStore")
+	//router.POST("/createuser",Createuser)
 }
 
 func UsersRegistration(c *gin.Context) {
 
-	var json form.RegisterRequestDto
+	var json dtos.RegisterRequestDto
 	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, form.CreateBadRequestErrorDto(err))
+		c.JSON(http.StatusBadRequest, dtos.CreateBadRequestErrorDto(err))
 		return
 	}
 
 	password, _ := bcrypt.GenerateFromPassword([]byte(json.Password), bcrypt.DefaultCost)
 	if err := services.CreateOne(&models.User{
 		//Username:  json.Username,
+		Password:  string(password),
 		FirstName: json.FirstName,
 		LastName:  json.LastName,
-		Password:  string(password),
 		Email:     json.Email,
-		Phoneno:   json.Phoneno,
-		Gender:    json.Gender,
 	}); err != nil {
-		c.JSON(http.StatusUnprocessableEntity, form.CreateDetailedErrorDto("database", err))
+		c.JSON(http.StatusUnprocessableEntity, dtos.CreateDetailedErrorDto("database", err))
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{
@@ -53,24 +46,24 @@ func UsersRegistration(c *gin.Context) {
 
 func UsersLogin(c *gin.Context) {
 
-	var json form.LoginRequestDto
+	var json dtos.LoginRequestDto
 	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, form.CreateBadRequestErrorDto(err))
+		c.JSON(http.StatusBadRequest, dtos.CreateBadRequestErrorDto(err))
 		return
 	}
 
-	user, err := services.FindOneUser(&models.User{Email: json.Email})
+	user, err := services.FindOneUser(&models.User{Username: json.Email})
 
 	if err != nil {
-		c.JSON(http.StatusForbidden, form.CreateDetailedErrorDto("login_error", err))
+		c.JSON(http.StatusForbidden, dtos.CreateDetailedErrorDto("login_error", err))
 		return
 	}
 
 	if user.IsValidPassword(json.Password) != nil {
-		c.JSON(http.StatusForbidden, form.CreateDetailedErrorDto("login", errors.New("invalid credentials")))
+		c.JSON(http.StatusForbidden, dtos.CreateDetailedErrorDto("login", errors.New("invalid credentials")))
 		return
 	}
 
-	c.JSON(http.StatusOK, form.CreateLoginSuccessful(&user))
+	c.JSON(http.StatusOK, dtos.CreateLoginSuccessful(&user))
 
 }

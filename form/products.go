@@ -1,11 +1,10 @@
 package form
 
 import (
+	"github.com/Neostore/models"
 	"net/http"
 	"strings"
 	"time"
-
-	"github.com/Neostore/models"
 )
 
 type ManagedModel models.Product
@@ -22,7 +21,7 @@ func CreatedProductPagedResponse(request *http.Request, products []models.Produc
 	for index, product := range products {
 		resources[index] = CreateProductDto(&product, commentsCount[index])
 	}
-	return CreatePagedResponseDto(request, resources, "products", page, page_size, count)
+	return CreatePagedResponse(request, resources, "products", page, page_size, count)
 }
 
 func CreateProductDto(product *models.Product, commentCount int) map[string]interface{} {
@@ -91,5 +90,5 @@ func CreateProductDetailsDto(product models.Product) map[string]interface{} {
 	return result
 }
 func CreateProductCreatedDto(product models.Product) map[string]interface{} {
-	return CreateSuccessWithDtoAndMessageDto(CreateProductDetailsDto(product), "Product crated successfully")
+	return CreateSuccessWithDtoAndMessageDto(CreateProductDetailsDto(product), "Product created successfully")
 }

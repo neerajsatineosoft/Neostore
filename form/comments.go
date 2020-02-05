@@ -1,10 +1,9 @@
 package form
 
 import (
+	"github.com/Neostore/models"
 	"net/http"
 	"time"
-
-	"github.com/Neostore/models"
 )
 
 type CreateComment struct {
@@ -25,7 +24,7 @@ func CreateCommentPagedResponse(request *http.Request, comments []models.Comment
 
 		resources[index] = GetSummary(&comment, includeUser, includeProduct)
 	}
-	return CreatePagedResponseDto(request, resources, "comments", page, page_size, count)
+	return CreatePagedResponse(request, resources, "comments", page, page_size, count)
 }
 
 func GetCommentDetailsDto(comment *models.Comment, includes ...bool) map[string]interface{} {

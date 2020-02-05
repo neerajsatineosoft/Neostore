@@ -155,12 +155,12 @@ func main() {
 	controllers.RegisterProductRoutes(apiRouteGroup.Group("/products"))
 	controllers.RegisterCommentRoutes(apiRouteGroup.Group("/"))
 	controllers.RegisterPageRoutes(apiRouteGroup.Group("/"))
-	controllers.RegisterAddressesRoutes(apiRouteGroup.Group("/users"))
+	controllers.RegisterAddressesRoutes(apiRouteGroup.Group("/address"))
 	controllers.RegisterTagRoutes(apiRouteGroup.Group("/tags"))
 	controllers.RegisterCategoryRoutes(apiRouteGroup.Group("/categories"))
-	// controllers.RegisterOrderRoutes(apiRouteGroup.Group("/orders"))
+	controllers.RegisterOrderRoutes(apiRouteGroup.Group("/orders"))
 
-	controllers.CreateUser(apiRouteGroup.Group("/createuser"))
+	//controllers.CreateUser(apiRouteGroup.Group("/createuser"))
 
 	goGonicEngine.Run(":8080") // listen and serve on 0.0.0.0:8080
 }
