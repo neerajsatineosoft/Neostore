@@ -2,16 +2,17 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/Neostore/dbconnection"
-	"github.com/Neostore/form"
-	"github.com/Neostore/middlewares"
-	"github.com/Neostore/models"
-	"github.com/Neostore/services"
-	"github.com/gin-gonic/gin"
 	"math/rand"
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"github.com/Neostore/dbconnection"
+	dtos "github.com/Neostore/form"
+	"github.com/Neostore/middlewares"
+	"github.com/Neostore/models"
+	"github.com/Neostore/services"
+	"github.com/gin-gonic/gin"
 )
 
 func RegisterTagRoutes(router *gin.RouterGroup) {
@@ -25,10 +26,10 @@ func RegisterTagRoutes(router *gin.RouterGroup) {
 func TagList(c *gin.Context) {
 	tags, err := services.FetchAllTags()
 	if err != nil {
-		c.JSON(http.StatusNotFound, form.CreateDetailedErrorDto("fetch_error", err))
+		c.JSON(http.StatusNotFound, dtos.CreateDetailedErrorDto("fetch_error", err))
 		return
 	}
-	c.JSON(http.StatusOK, form.CreateTagListMapDto(tags))
+	c.JSON(http.StatusOK, dtos.CreateTagListMapDto(tags))
 }
 
 var letterRunes = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -44,16 +45,16 @@ func randomString(length int) string {
 func CreateTag(c *gin.Context) {
 	user := c.Keys["currentUser"].(models.User)
 	if user.IsNotAdmin() {
-		c.JSON(http.StatusForbidden, form.CreateErrorDtoWithMessage("Permission denied, you must be admin"))
+		c.JSON(http.StatusForbidden, dtos.CreateErrorDtoWithMessage("Permission denied, you must be admin"))
 		return
 	}
-	var createForm form.CreateTag
+	var createForm dtos.CreateTag
 	// name := c.PostForm("name")
 	// description := c.PostForm("description")
 
 	// If you wanna know more about how binding is done internally check gin-gonic/bin/binding.formBinding.Bind at form.go
 	if err := c.ShouldBind(&createForm); err != nil {
-		c.JSON(http.StatusBadRequest, form.CreateBadRequestErrorDto(err))
+		c.JSON(http.StatusBadRequest, dtos.CreateBadRequestErrorDto(err))
 		return
 	}
 
@@ -73,12 +74,12 @@ func CreateTag(c *gin.Context) {
 		if _, err = os.Stat(dirPath); os.IsNotExist(err) {
 			err = os.MkdirAll(dirPath, os.ModeDir)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, form.CreateDetailedErrorDto("io_error", err))
+				c.JSON(http.StatusInternalServerError, dtos.CreateDetailedErrorDto("io_error", err))
 				return
 			}
 		}
 		if err := c.SaveUploadedFile(file, filePath); err != nil {
-			c.JSON(http.StatusBadRequest, form.CreateDetailedErrorDto("upload_error", err))
+			c.JSON(http.StatusBadRequest, dtos.CreateDetailedErrorDto("upload_error", err))
 			return
 		}
 		fileSize := (uint)(file.Size)
@@ -92,8 +93,8 @@ func CreateTag(c *gin.Context) {
 	// SELECT "category_id", "product_id" FROM "file_uploads"  WHERE (id = insertedFileUploadId)
 	err = database.Create(&tag).Error
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, form.CreateDetailedErrorDto("db_error", err))
+		c.JSON(http.StatusInternalServerError, dtos.CreateDetailedErrorDto("db_error", err))
 	}
 
-	c.JSON(http.StatusOK, form.CreateTagCreatedDto(tag))
+	c.JSON(http.StatusOK, dtos.CreateTagCreatedDto(tag))
 }
