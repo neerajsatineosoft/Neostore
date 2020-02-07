@@ -1,8 +1,9 @@
 package form
 
 import (
-	"github.com/Neostore/models"
 	"net/http"
+
+	"github.com/Neostore/models"
 )
 
 type CreateAddress struct {
@@ -34,8 +35,8 @@ func GetAddressDto(address *models.Address, includeUser bool) map[string]interfa
 
 	if includeUser {
 		dto["user"] = map[string]interface{}{
-			"id":       address.UserId,
-			"username": address.User.Username,
+			"id":    address.UserId,
+			"email": address.User.Email,
 		}
 	}
 	return dto

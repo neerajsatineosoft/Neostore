@@ -148,9 +148,9 @@ func main() {
 
 	goGonicEngine.Use(middlewares.UserLoaderMiddleware())
 	goGonicEngine.Static("/static", "./static")
-	apiRouteGroup := goGonicEngine.Group("/api")
+	apiRouteGroup := goGonicEngine.Group("/")
 
-	controllers.RegisterUserRoutes(apiRouteGroup.Group("/home"))
+	//controllers.RegisterUserRoutes(apiRouteGroup.Group("/home"))
 	controllers.RegisterUserRoutes(apiRouteGroup.Group("/users"))
 	controllers.RegisterProductRoutes(apiRouteGroup.Group("/products"))
 	controllers.RegisterCommentRoutes(apiRouteGroup.Group("/"))

@@ -1,13 +1,14 @@
 package seeds
 
 import (
-	"github.com/icrowley/fake"
-	"github.com/jinzhu/gorm"
-	"github.com/Neostore/dbconnection"
-	"github.com/Neostore/models"
-	"golang.org/x/crypto/bcrypt"
 	"math/rand"
 	"time"
+
+	"github.com/Neostore/dbconnection"
+	"github.com/Neostore/models"
+	"github.com/icrowley/fake"
+	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func randomInt(min, max int) int {
@@ -47,7 +48,7 @@ func seedAdmin(db *gorm.DB) {
 		// query.First(&adminRole) // First would fetch the Role admin because the query status name='ROLE_ADMIN'
 		password, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
 		// Approach 1
-		user := models.User{FirstName: "Neeraj", LastName: "sati", Email: "neeraj.sati@neosofttech.com", Username: "neeraj", Password: string(password)}
+		user := models.User{FirstName: "Neeraj", LastName: "sati", Email: "neeraj.sati@neosofttech.com", Password: string(password)}
 		user.Roles = append(user.Roles, adminRole)
 
 		// Do not try to update the adminRole
@@ -85,8 +86,7 @@ func seedUsers(db *gorm.DB) {
 	if usersToSeed > 0 {
 		for i := 0; i < usersToSeed; i++ {
 			password, _ := bcrypt.GenerateFromPassword([]byte("password"), bcrypt.DefaultCost)
-			user := models.User{FirstName: fake.FirstName(), LastName: fake.LastName(), Email: fake.EmailAddress(), Username: fake.UserName(),
-				Password: string(password)}
+			user := models.User{FirstName: fake.FirstName(), LastName: fake.LastName(), Email: fake.EmailAddress(), Password: string(password)}
 			// No need to add the role as we did for seedAdmin, it is added by the BeforeSave hook
 			db.Set("gorm:association_autoupdate", false).Create(&user)
 		}
@@ -236,6 +236,7 @@ func seedAddresses(db *gorm.DB) {
 		}
 	}
 }
+
 // func seedOrders(db *gorm.DB) {
 // 	ordersCount := 0
 // 	ordersToSeed := 20

@@ -2,11 +2,12 @@ package models
 
 import (
 	"errors"
+	"os"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/crypto/bcrypt"
-	"os"
-	"time"
 )
 
 type User struct {
@@ -14,11 +15,11 @@ type User struct {
 	//Id           uint    `gorm:"primary_key"`
 	FirstName string `gorm:"varchar(255);not null"`
 	LastName  string `gorm:"varchar(255);not null"`
-	Username  string `gorm:"column:username"`
-	Email     string `gorm:"column:email;unique_index"`
-	Password  string `gorm:"column:password;not null"`
-	Phoneno string 	 `gorm:"column:phone_no;not null"`
-	Gender string     `gorm:"column:gender;not null"`
+	//Username  string `gorm:"column:username"`
+	Email    string `gorm:"column:email;unique_index"`
+	Password string `gorm:"column:password;not null"`
+	Phoneno  string `gorm:"column:phone_no;not null"`
+	Gender   string `gorm:"column:gender;not null"`
 
 	//Comments []Comment `gorm:"foreignkey:UserId"`
 
@@ -72,10 +73,10 @@ func (user *User) GenerateJwtToken() string {
 	}
 
 	jwt_token.Claims = jwt.MapClaims{
-		"user_id":  user.ID,
-		"email": user.Email,
-		"roles":    roles,
-		"exp":      time.Now().Add(time.Hour * 24 * 90).Unix(),
+		"user_id": user.ID,
+		"email":   user.Email,
+		"roles":   roles,
+		"exp":     time.Now().Add(time.Hour * 24 * 90).Unix(),
 	}
 	// Sign and get the complete encoded token as a string
 	token, _ := jwt_token.SignedString([]byte(os.Getenv("JWT_SECRET")))

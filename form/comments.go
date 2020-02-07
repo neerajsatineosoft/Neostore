@@ -1,9 +1,10 @@
 package form
 
 import (
-	"github.com/Neostore/models"
 	"net/http"
 	"time"
+
+	"github.com/Neostore/models"
 )
 
 type CreateComment struct {
@@ -48,8 +49,8 @@ func GetSummary(comment *models.Comment, includeUser, includeProduct bool) map[s
 	}
 	if includeUser == true {
 		result["user"] = map[string]interface{}{
-			"id":       comment.User.ID,
-			"username": comment.User.Username,
+			"id":    comment.User.ID,
+			"email": comment.User.Email,
 		}
 	}
 	if includeProduct == true {

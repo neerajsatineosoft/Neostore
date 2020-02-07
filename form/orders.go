@@ -1,8 +1,9 @@
 package form
 
 import (
-	"github.com/Neostore/models"
 	"net/http"
+
+	"github.com/Neostore/models"
 )
 
 type CreateOrderRequestDto struct {
@@ -68,8 +69,8 @@ func CreateOrderDto(order *models.Order, includes ...bool) map[string]interface{
 
 	if includeUser {
 		result["user"] = map[string]interface{}{
-			"id":       order.UserId,
-			"username": order.User.Username,
+			"id":    order.UserId,
+			"email": order.User.Email,
 		}
 	}
 

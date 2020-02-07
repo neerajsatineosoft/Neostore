@@ -35,6 +35,8 @@ func UsersRegistration(c *gin.Context) {
 		FirstName: json.FirstName,
 		LastName:  json.LastName,
 		Email:     json.Email,
+		Phoneno:   json.Phoneno,
+		Gender:    json.Gender,
 	}); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, dtos.CreateDetailedErrorDto("database", err))
 		return
@@ -52,7 +54,7 @@ func UsersLogin(c *gin.Context) {
 		return
 	}
 
-	user, err := services.FindOneUser(&models.User{Username: json.Email})
+	user, err := services.FindOneUser(&models.User{Email: json.Email})
 
 	if err != nil {
 		c.JSON(http.StatusForbidden, dtos.CreateDetailedErrorDto("login_error", err))
